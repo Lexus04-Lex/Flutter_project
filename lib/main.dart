@@ -30,11 +30,36 @@ class MyApp extends StatelessWidget{
     Widget build(BuildContext context){
       final title = 'Lexus';
       return Scaffold(
-        appBar: AppBar(title: Text(title),),
-        body: Column(
-          children: [
-            Text('Good morning'),
-          ],
+        appBar: AppBar(title: Text(title),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+        elevation: 10,
+        ),
+        body: Container(
+          color: Colors.amber,
+          height: 100,
+          width: 200,
+          margin: EdgeInsets.fromLTRB(10, 40, 30, 50),
+          padding: EdgeInsets.all(20),
+          child: Center(
+            child: Column(
+              
+            
+              children: [
+                
+                Text('Good morning',
+                style: TextStyle(
+
+                  // decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.bold,
+                  // letterSpacing: 18,
+                  fontStyle: FontStyle.italic,
+
+                ),
+                ),
+              ],
+            ),
+          ),
         ),
       );
 
