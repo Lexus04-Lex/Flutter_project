@@ -15,12 +15,16 @@ class _BodyWidgetState extends State<BodyWidget> {
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.all(20),
       
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('Hello')
-        ],
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Hello')
+          ],
+        ),
+      
       ),
+      
     );
   }
 }
