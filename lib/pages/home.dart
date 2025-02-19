@@ -90,7 +90,8 @@ class _BodyWidgetState extends State<BodyWidget> {
         
         items: const <BottomNavigationBarItem> [
           BottomNavigationBarItem(icon: Icon(Icons.home),
-          label: 'Home'
+          label: 'Home',
+          
           
           ),
 
