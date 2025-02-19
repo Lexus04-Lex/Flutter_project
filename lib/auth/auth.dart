@@ -1,56 +1,46 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AuthService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+class AuthService{
+  final SupabaseClient _supabase = Supabase.instance.client;
 
-  // Get the currently signed-in user
-  User? get currentUser => _firebaseAuth.currentUser;
+  Future<AuthResponse> signInWithEmailAndPassword(String email, String password)async {
+    return _supabase.auth.signInWithPassword(password: password);
 
-  // Stream to listen for auth state changes (login/logout)
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
-
-  // Existing user log in function
-  Future<String?> signIn(String email, String password) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      return null; // No errors
-    } on FirebaseAuthException catch (e) {
-      return e.message; // Return error message
-    } catch (e) {
-      return "An unexpected error occurred. Please try again.";
-    }
   }
 
-  // New user sign up function
-  Future<String?> signUp(String email, String password) async {
-    try {
-      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-      return null;
-    } on FirebaseAuthException catch (e) {
-      return e.message;
-    } catch (e) {
-      return "An unexpected error occurred. Please try again.";
-    }
-  }
+  Future<void> signUp(String email, String password, String fullname, String username)async {
 
-  // Reset password function
-  Future<String?> resetPasswordForEmail(String email) async {
-    try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
-      return null; // No errors
-    } on FirebaseAuthException catch (e) {
-      return e.message;
-    } catch (e) {
-      return "An unexpected error occurred. Please try again.";
-    }
-  }
+    final response = await _supabase.auth.signUp(password: password, email: email);
 
-  // Sign out function
-  Future<void> signOut() async {
-    try {
-      await _firebaseAuth.signOut();
-    } catch (e) {
-      print("Error signing out: $e");
-    }
-  }
+    //Storing user data into supabase
+if(response.user !=null){
+    await _supabase.from('profiles').insert({
+      'id': response.user!.id,
+      'username': username,
+      'fullname': fullname,
+      'email': email,
+      'profilepic': '',
+      'createdat': DateTime.now().toIso8601String(),
+
+  });
+} else{
+  throw Exception('Sign Up failed');
 }
+  }
+  
+  Future<void> logout()async {
+    await _supabase.auth.signOut();
+  }
+
+  Future<void> resetPasswordForEmail(String email) async {
+    await _supabase.auth.resetPasswordForEmail(email);
+  }
+
+  String? getCurrentUserEmail(){
+    final session = _supabase.auth.currentSession;
+
+    final user = session?. user;
+
+    return user?.email;
+  }
+  }

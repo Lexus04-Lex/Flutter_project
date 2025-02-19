@@ -64,19 +64,22 @@ class _CreatepostpagState extends State<Createpostpage> {
       appBar: AppBar(title: Text('Create Post'),
       centerTitle: true,
       ),
-      body: Padding(
+      body: ListView(
+        
         padding: EdgeInsets.all(25),
-        child: Column(
+        children: [ Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
               onTap: pickImage,
               child: Container(
                 height: 150,
+                margin: EdgeInsets.only(bottom: 20),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(10),
+                  
                 ),
                 child: _selectedImage == null
                     ? Center(child: Text('Tap to select an image'))
@@ -85,6 +88,7 @@ class _CreatepostpagState extends State<Createpostpage> {
             ),
             SizedBox(height: 10),
             TextField(
+              
               controller: _captionController,
               decoration: InputDecoration(hintText: 'Enter image caption'),
             ),
@@ -101,6 +105,7 @@ class _CreatepostpagState extends State<Createpostpage> {
             ),
           ],
         ),
+        ],
       ),
     );
   }
