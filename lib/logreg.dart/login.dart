@@ -43,7 +43,7 @@ class _LoginpageState extends State<Loginpage> {
     return Scaffold( // Wrap everything inside a Scaffold
       appBar: AppBar(title: Text("Login")), // Optional AppBar for UI consistency
       body: Padding(
-        padding: EdgeInsets.all(25),
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,7 +100,7 @@ class _LoginpageState extends State<Loginpage> {
                     context,
                     MaterialPageRoute(builder: (context) => const Register()),
                   ),
-                  child: Text("Don't have an account? Sign up"),
+                  child: Text("Don't have an account?Sign up"),
                 ),
               ],
             ),

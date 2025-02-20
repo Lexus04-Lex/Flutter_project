@@ -8,18 +8,18 @@ class AuthService{
 
   }
 
-  Future<void> signUp(String email, String password, String fullname, String username)async {
+  Future<void> signUp(String username, String password, String fullname, String email)async {
 
-    final response = await _supabase.auth.signUp(password: password, email: email);
+    final response = await _supabase.auth.signUp( email: email, password: password);
 
     //Storing user data into supabase
 if(response.user !=null){
     await _supabase.from('profiles').insert({
-      'id': response.user!.id,
+      // 'id': response.user!.id,
       'username': username,
       'fullname': fullname,
       'email': email,
-      'profilepic': '',
+      'profilepic': null,
       'createdat': DateTime.now().toIso8601String(),
 
   });
