@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'package:weconnect/main.dart';
+import 'package:weconnect/auth/auth.dart';
 import 'package:weconnect/pages/homepage.dart';
 import 'package:weconnect/pages/menu.dart';
 import 'package:weconnect/pages/profile.dart';
 import 'package:weconnect/pages/settings.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:weconnect/logreg.dart/logout.dart';
 
 class BodyWidget extends StatefulWidget {
   const BodyWidget({super.key});
@@ -14,6 +17,7 @@ class BodyWidget extends StatefulWidget {
 }
 
 class _BodyWidgetState extends State<BodyWidget> {
+  final authservice = AuthService();
   int _selectedIndex = 0;
   late final List<Widget> _pages;
   late String userName = '';
@@ -31,19 +35,21 @@ class _BodyWidgetState extends State<BodyWidget> {
     _fetchUserProfile();
   }
 
+  //Log out function
+
   // Fetch user profile from Supabase
   void _fetchUserProfile() async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user != null) {
       final response = await Supabase.instance.client
           .from('profiles') // Assuming 'profiles' is the table where the user info is stored
-          .select('name, email')
+          .select('username, email')
           .eq('user_id', user.id) // Make sure to query based on user_id or any unique identifier
           .maybeSingle();
 
       if (response != null && response.isNotEmpty) {
         setState(() {
-          userName = response['name'] ?? 'Name not available';
+          userName = response['username'] ?? 'Name not available';
           userEmail = response['email'] ?? 'Email not available';
         });
       } else {
@@ -91,6 +97,18 @@ class _BodyWidgetState extends State<BodyWidget> {
               leading: Icon(Icons.settings),
               title: Text('Settings'),
             ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Log Out'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LogoutPage()),
+                );
+              },
+            ),
+            //Log out button
+           
           ],
         ),
       ),

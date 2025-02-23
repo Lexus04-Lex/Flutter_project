@@ -6,6 +6,7 @@ import 'package:weconnect/pages/home.dart';
 import 'package:weconnect/logreg.dart/register.dart';
 import 'package:weconnect/logreg.dart/reset.dart';
 
+
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
 
@@ -25,23 +26,50 @@ class _LoginpageState extends State<Loginpage> {
     super.dispose();
   }
 
+  /// **🔥 Modified Login Function**
   void login() async {
-    final username = _username.text;
-    final password = _password.text;
+    final username = _username.text.trim();
+    final password = _password.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter both username and password')),
+      );
+      return;
+    }
 
     try {
-      await authservice.signInWithEmailAndPassword(username, password);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Successfully logged in')));
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const BodyWidget()));
+      // **Step 1: Get the email linked to the username**
+      final response = await authservice.getEmailFromUsername(username);
+
+      if (response == null) {
+        throw Exception('Username not found');
+      }
+
+      final email = response; // The retrieved email
+
+      // **Step 2: Sign in using email & password**
+      await authservice.signInWithEmailAndPassword(email, password);
+
+      // **Step 3: Navigate to Home Page on success**
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Successfully logged in')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const BodyWidget()),
+      );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error! log in failed $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error! Login failed: $e')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // Wrap everything inside a Scaffold
-      appBar: AppBar(title: Text("Login")), // Optional AppBar for UI consistency
+    return Scaffold(
+      appBar: AppBar(title: Text("Login")),
       body: Padding(
         padding: EdgeInsets.all(20),
         child: Column(
@@ -59,7 +87,7 @@ class _LoginpageState extends State<Loginpage> {
 
             // Password Field
             TextField(
-              controller: _password, // This should be _password, not _username
+              controller: _password,
               obscureText: true,
               enableSuggestions: false,
               autocorrect: false,
@@ -85,7 +113,6 @@ class _LoginpageState extends State<Loginpage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Reset password link
                 TextButton(
                   onPressed: () => Navigator.pushReplacement(
                     context,
@@ -93,14 +120,12 @@ class _LoginpageState extends State<Loginpage> {
                   ),
                   child: Text('Forgot password?'),
                 ),
-
-                // Sign up button for new user
                 TextButton(
                   onPressed: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const Register()),
                   ),
-                  child: Text("Don't have an account?Sign up"),
+                  child: Text("Don't have an account? Sign up"),
                 ),
               ],
             ),

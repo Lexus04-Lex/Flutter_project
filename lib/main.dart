@@ -5,8 +5,8 @@ import 'package:weconnect/auth/authgate.dart';
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: 'https://xkufmazhwkemukcnsgsr.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhrdWZtYXpod2tlbXVrY25zZ3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgzMjI2MTYsImV4cCI6MjA1Mzg5ODYxNn0.KFfpRmIyRfHALLFD49sFurizzSLkdPNEeHyfiEGlA7k',
+    url: 'https://uyjedkojbrwwguwrzmwb.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5amVka29qYnJ3d2d1d3J6bXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAwNjUzNzIsImV4cCI6MjA1NTY0MTM3Mn0.5h9YNs1RlUJFuyaIEuWku8KIpSYUT6DBlVrfR8Go1ms',
 
   );
   runApp(const MyApp());

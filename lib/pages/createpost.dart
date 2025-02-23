@@ -2,6 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+// import 'package:weconnect/pages/home.dart';
+// import 'package:weconnect/pages/homepage.dart';
+// import 'package:weconnect/pages/home.dart';
+import 'package:weconnect/logreg.dart/logout.dart';
 import 'dart:io';
 import 'package:weconnect/pages/post_service.dart';
 
@@ -47,7 +51,16 @@ class _CreatepostpagState extends State<Createpostpage> {
     }
 
     try {
-      await postservice.createPost(content,_selectedImage, caption);
+      // 🔥 Upload image to Supabase Storage
+      String? imageUrl = await postservice.uploadImageToSupabase(_selectedImage!);
+
+      if (imageUrl == null) {
+        throw Exception("Image upload failed");
+      }
+
+      // 🔥 Store post in Supabase
+      await postservice.createPost(content, imageUrl, caption);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Post created successfully')),
       );
@@ -61,50 +74,69 @@ class _CreatepostpagState extends State<Createpostpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Post'),
-      centerTitle: true,
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LogoutPage()),
+              );
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
+        title: Text('Create Post'),
+        centerTitle: true,
       ),
       body: ListView(
-        
         padding: EdgeInsets.all(25),
-        children: [ Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: pickImage,
-              child: Container(
-                height: 150,
-                margin: EdgeInsets.only(bottom: 20),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                  
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              // Row(
+              //   children: [
+              //     Container(
+              //           child: BodyWidget(),
+              //     )
+              //   ],
+              // ),
+              GestureDetector(
+                onTap: pickImage,
+                child: Container(
+                  height: 150,
+                  margin: EdgeInsets.only(bottom: 20),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: _selectedImage == null
+                      ? Center(child: Text('Tap to select an image'))
+                      : Image.file(_selectedImage!, fit: BoxFit.cover),
                 ),
-                child: _selectedImage == null
-                    ? Center(child: Text('Tap to select an image'))
-                    : Image.file(_selectedImage!, fit: BoxFit.cover),
               ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              
-              controller: _captionController,
-              decoration: InputDecoration(hintText: 'Enter image caption'),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _contentController,
-              decoration: InputDecoration(hintText: 'Enter post content'),
-              maxLines: 5,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: createPost,
-              child: Text('Post'),
-            ),
-          ],
-        ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _captionController,
+                decoration: InputDecoration(hintText: 'Enter image caption'),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: _contentController,
+                decoration: InputDecoration(hintText: 'Enter post content'),
+                maxLines: 5,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: createPost,
+                child: Text('Post'),
+              ),
+            ],
+            
+          ),
         ],
       ),
     );
