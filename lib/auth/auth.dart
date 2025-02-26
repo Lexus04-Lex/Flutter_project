@@ -64,6 +64,8 @@ class AuthService {
     await _supabase.auth.resetPasswordForEmail(email);
   }
 
+  
+
   /// **🔥 Get Current User Email**
   String? getCurrentUserEmail() {
     final session = _supabase.auth.currentSession;
